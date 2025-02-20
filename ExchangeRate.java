@@ -19,6 +19,14 @@ public class ExchangeRate {
         this.rate = rate;
     }
 
+    /**
+     * It takes exchangeRates data, payment object and currency name
+     * It tries to found pairity in the exchangeRate datas and convert into EUR, if there is no data found in file2.csv(exchange rates data) it returns 0
+     * @param exchangeRates
+     * @param payment
+     * @param ccy
+     * @return
+     */
     public static BigDecimal calculateExchangeRateGivenPairName(List<ExchangeRate> exchangeRates, Payment payment, String ccy) {
         BigDecimal amount = new BigDecimal(0);
 

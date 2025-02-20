@@ -17,6 +17,11 @@ public class PaymentAggregator {
     }
 
 
+    /**
+     * It takes payment object and tries to convert to EUR
+     * @param payment
+     * @return
+     */
     private BigDecimal convertToEUR(Payment payment) {
         LocalDate date = payment.getDateTime().toLocalDate();
         String ccy = payment.getCurrency();
@@ -30,6 +35,12 @@ public class PaymentAggregator {
     }
 
 
+    /**
+     * This function's responsibility is finding highest single payment transaction
+     * When I'm doing this, I took absolute value of it.
+     * Suppose that there are three transactions in the file1.csv(-5000EUR, 2500EUR, 1000EUR), it should return -5000 as highest
+     * @return
+     */
     public BigDecimal highestEuroValueForSinglePayment() {
         BigDecimal highestEuroValue = BigDecimal.ZERO;
 
@@ -46,6 +57,13 @@ public class PaymentAggregator {
     }
 
 
+    /**
+     * This function's responsibility is finding lowest single payment transaction
+     * When I'm doing this, I took absolute value of it.
+     * Ex1: Suppose that there are three transactions in the file1.csv(5000EUR, -40EUR, 20EUR), it should return 20 as lowest
+     * Ex2: Suppose that there are three transactions in the file1.csv(5000EUR, -20EUR, 40EUR), it should return -20 as lowest
+     * @return
+     */
     public BigDecimal lowestEuroValueForSinglePayment() {
         BigDecimal lowestEuroValue = new BigDecimal(String.valueOf(payments.get(0).getAmount()));
 
@@ -60,6 +78,9 @@ public class PaymentAggregator {
         return lowestEuroValue;
     }
 
+    /**
+     * It calculates outstanding amounts for each company in EUR (if there is another currency, it tries to convert into EUR, if there is no match file2.csv(exchange rates data) it takes as 0 EUR)
+     */
     public void outStandingAmountsForEachCompany() {
 
         Map<String, List<BigDecimal>> companyAmounts = new HashMap<>();
@@ -87,6 +108,9 @@ public class PaymentAggregator {
     }
 
 
+    /**
+     * It calculates transactionVolume as absolute sum
+     */
     public BigDecimal transactionVolume() {
         BigDecimal total = BigDecimal.ZERO;
         for(Payment payment : this.payments) {
@@ -97,6 +121,9 @@ public class PaymentAggregator {
         return total;
     }
 
+    /**
+     * It calculates outstanding amount per currency
+     */
     public void outstandingAmountPerCurrency() {
         Map<String, List<BigDecimal>> currencyAmounts = new HashMap<>();
         System.out.println("Outstanding amounts per currency");
@@ -124,8 +151,8 @@ public class PaymentAggregator {
                     .map(BigDecimal::toString)
                     .collect(Collectors.joining(" + "));
 
-            if(exchangeRateNotFound && total.compareTo(BigDecimal.ZERO) == 0) {
-                System.out.println("\t" + entry.getKey() + ": " + "N/A" + " = " + "N/A");
+            if(exchangeRateNotFound && total.compareTo(BigDecimal.ZERO) == 0) { //If there is no data file2.csv (then display as N/A)
+                System.out.println("\t" + entry.getKey() + ": " + "N/A = N/A");
             }
             else{
                 System.out.println("\t" + entry.getKey() + ": " + total + " = " + expression);
@@ -135,11 +162,11 @@ public class PaymentAggregator {
     }
 
     public void dailySummary() {
-        highestEuroValueForSinglePayment();
-        lowestEuroValueForSinglePayment();
-        outStandingAmountsForEachCompany();
-        transactionVolume();
-        outstandingAmountPerCurrency();
+        highestEuroValueForSinglePayment(); //It calculates highest Euro(absolute value) value for single payment
+        lowestEuroValueForSinglePayment(); //It calculates lowest Euro(absolute value) value for single payment
+        outStandingAmountsForEachCompany(); //It calculates outstanding amounts for each company in file1.csv(where payment datas are located)
+        transactionVolume(); //It calculates outstanding amounts for each company in file1.csv(where payment datas are located)
+        outstandingAmountPerCurrency(); //It calculates
     }
 
     /**

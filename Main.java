@@ -12,13 +12,13 @@ public class Main {
 
 
         CSVReader csvReader = new CSVReader();
-        payments = csvReader.readPaymentCSV("./input/file1.csv");
-        exchangeRates = csvReader.readExhangeRateCSV("./input/file2.csv");
+        payments = csvReader.readPaymentCSV("./input/file1.csv"); //read file1.csv
+        exchangeRates = csvReader.readExhangeRateCSV("./input/file2.csv"); // read file2.csv
 
 
-        // Build the aggregator
+        // Build the aggregator with payments data & exchangeRates data
         PaymentAggregator aggregator = new PaymentAggregator(payments, exchangeRates);
-        aggregator.dailySummary();
+        aggregator.dailySummary(); // do the operation of dailySummary
         // Compute daily summaries
     }
 }
